@@ -1,0 +1,43 @@
+on: [push, pull_request]
+
+jobs:
+  amd64:
+    runs-on: ubuntu-20.04
+    if: contains(github.event.head_commit.message, 'CI skip') == false
+    name: Testing amd64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+          submodules: true
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true  
+      - name: Build PHPs
+        run: |
+          make build ARCH=amd64
+      - name: Test
+        # remove init line for your extension tests.
+        run: |
+          make init ARCH=amd64 EXTNAME=ci && sudo rm src/tests/003.phpt
+          make test ARCH=amd64
+  i386:
+    runs-on: ubuntu-20.04
+    if: contains(github.event.head_commit.message, 'CI skip') == false
+    name: Testing i386
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+          submodules: true
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true  
+      - name: Build PHPs
+        run: |
+          make build ARCH=i386
+      - name: Test
+        # remove init line for your extension tests.
+        run: |
+          make init ARCH=i386 EXTNAME=ci && sudo rm src/tests/003.phpt
+          make test ARCH=i386
