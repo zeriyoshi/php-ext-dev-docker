@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM amd64/debian:buster
 
 ENV DEBIAN_FRONTEND=nointeractive
 RUN apt-get update && \

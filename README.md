@@ -1,6 +1,7 @@
 # PHP Extension Development Toolkit
 
 Toolkit for PHP Extension development with Docker and VSCode.
+
 Includes Valgrind memory check and ZTS support.
 
 ## Usage
@@ -8,7 +9,14 @@ Includes Valgrind memory check and ZTS support.
 ### Initialize
 
 Checkout your desired `php-src` versions in `vendor/php-src`.
-Default: `PHP-8.0` (PHP 8.0.x development branch)
+
+Default: `PHP-8.0` (PHP 8.0.x development branch):
+
+```bash
+$ git submodule update --init --recursive
+```
+
+After:
 
 ```bash
 $ cd vendor/php-src
@@ -69,4 +77,10 @@ And it can running separately:
 ```bash
 $ make test-nts # Testing non-thread-safe (NTS) only
 $ make test-zts # Testing thread-safe (ZTS) only
+```
+
+Also support i386 (32-bit) tests:
+
+```
+$ make test ARCH=i386
 ```
