@@ -1,0 +1,44 @@
+FROM debian:buster
+
+ENV DEBIAN_FRONTEND=nointeractive
+RUN apt-get update && \
+    apt-get install -y \
+        "build-essential" "autoconf" "bison" "re2c" "pkg-config" \
+        "curl" "libcurl4-gnutls-dev" \
+        "libssl-dev" "ca-certificates" \
+        "libbz2-dev" "libzip-dev" "zlib1g-dev" \
+        "libjpeg-dev" "libpng-dev" \
+        "libxml2-dev" "libxslt1-dev"\
+        "libreadline-dev" \
+        "libsqlite3-dev" \
+        "libicu-dev" \
+        "libonig-dev" \
+        "libtidy-dev" \
+        "libffi-dev" \
+        "valgrind" "gdb" \
+        "git"
+
+COPY ["vendor/php-src", "/php-src"]
+RUN cd "/php-src" && \
+        ./buildconf --force && \
+        ./configure \
+            --program-suffix=-zts --enable-zts --includedir=/usr/local/include-zts \
+            --enable-sockets --enable-exif --enable-intl --enable-soap --enable-xmlreader --enable-ftp --enable-cgi --enable-sysvsem --enable-sysvshm --enable-shmop --enable-pcntl --enable-mbstring --enable-bcmath \
+            --with-zlib --with-bz2 --with-openssl --with-xsl --with-curl --with-tidy --with-mysqli --with-pdo-mysql --with-pdo-sqlite --with-readline --with-ffi \
+            --disable-fpm --disable-cgi --disable-phpdbg --with-valgrind --enable-debug && \
+        make clean && \
+        make -j$(nproc) && \
+        make install && \
+        ./buildconf --force && \
+        ./configure \
+            --enable-sockets --enable-exif --enable-intl --enable-soap --enable-xmlreader --enable-ftp --enable-cgi --enable-sysvsem --enable-sysvshm --enable-shmop --enable-pcntl --enable-mbstring --enable-bcmath \
+            --with-zlib --with-bz2 --with-openssl --with-xsl --with-curl --with-tidy --with-mysqli --with-pdo-mysql --with-pdo-sqlite --with-readline --with-ffi \
+            --disable-fpm --disable-cgi --disable-phpdbg --with-valgrind --enable-debug && \
+        make clean && \
+        make -j$(nproc) && \
+        make install && \
+    cd -
+
+WORKDIR "/php-src/ext/src"
+ENV NO_INTERACTION=1
+CMD ["/bin/bash"]

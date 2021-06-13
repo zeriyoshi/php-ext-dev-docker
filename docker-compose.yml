@@ -1,0 +1,13 @@
+version: "3.8"
+services: 
+    dev:
+        build: 
+            context: .
+        volumes: 
+            - ./src:/php-src/ext/src:delegated
+        tty: true
+        privileged: true
+        cap_add: 
+            - "SYS_PTRACE"
+        security_opt: 
+            - seccomp:unconfined
