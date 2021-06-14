@@ -24,11 +24,11 @@ bash:
 
 .PHONY: test-nts
 test-nts: build
-	$(COMPOSE) run ${ARCH} /bin/bash -c "make clean || true && phpize && ./configure --with-php-config=/usr/local/bin/php-config && make && USE_ZEND_ALLOC=0 TEST_PHP_ARGS=-m make test"
+	$(COMPOSE) run ${ARCH} /bin/bash -c "make clean || true && phpize && ./configure --with-php-config=/usr/local/bin/php-config && make && make test && USE_ZEND_ALLOC=0 TEST_PHP_ARGS=-m make test"
 
 .PHONY: test-zts
 test-zts: build
-	$(COMPOSE) run ${ARCH} /bin/bash -c "make clean || true && phpize-zts && ./configure --with-php-config=/usr/local/bin/php-config-zts && make && USE_ZEND_ALLOC=0 TEST_PHP_ARGS=-m make test"
+	$(COMPOSE) run ${ARCH} /bin/bash -c "make clean || true && phpize-zts && ./configure --with-php-config=/usr/local/bin/php-config-zts && make && make test && USE_ZEND_ALLOC=0 TEST_PHP_ARGS=-m make test"
 
 .PHONY: test
 test: build test-nts test-zts
